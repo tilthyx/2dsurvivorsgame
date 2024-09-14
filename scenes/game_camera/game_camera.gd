@@ -17,7 +17,7 @@ func _process(delta: float) -> void:
 	
 	# Smoothly moves the camera towards the target position using linear interpolation (lerp).
 	# The speed of the movement is influenced by 'delta' and the exponential function.
-	global_position = global_position.lerp(target_position, 1.0 - exp(-delta * 10))
+	global_position = global_position.lerp(target_position, 1.0 - exp(-delta * 20))
 
 # Acquires the position of the target (usually the player).
 # The player node is assumed to be in the "player" group.

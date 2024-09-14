@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 # Maximum speed the character moves
-const MAX_SPEED = 75
+const MAX_SPEED = 40
 
 # Called when the node enters the scene tree for the first time.
 # Can be used for initialization purposes if needed.
