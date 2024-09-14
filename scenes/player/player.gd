@@ -1,7 +1,8 @@
 extends CharacterBody2D
 
 # Maximum speed the character can move
-const MAX_SPEED = 200
+const MAX_SPEED = 125
+const ACCELERATION_SMOOTHING = 25
 
 # Called when the node enters the scene tree for the first time.
 # This is usually where initialization occurs.
@@ -18,8 +19,10 @@ func _process(delta: float) -> void:
 	# regardless of diagonal movement.
 	var direction = movement_vector.normalized()
 	
+	var target_velocity = direction * MAX_SPEED
+	
 	# Set velocity based on direction and maximum speed
-	velocity = direction * MAX_SPEED
+	velocity = velocity.lerp(target_velocity, 1 - exp(-delta * ACCELERATION_SMOOTHING))
 	
 	# Move the character using the calculated velocity, sliding along surfaces when necessary
 	move_and_slide()
