@@ -8,6 +8,8 @@ extends Node
 # The default value is set to 150.
 @export var max_range : float = 150
 
+var damage = 5
+
 # Called when the node enters the scene tree for the first time.
 # Connects the Timer node's timeout signal to the 'on_timer_timeout' function.
 func _ready() -> void:
@@ -43,10 +45,11 @@ func on_timer_timeout() -> void:
 	)
 	
 	# Instantiate the sword ability and position it at the nearest enemy.
-	var sword_instance = sword_ability.instantiate() as Node2D
+	var sword_instance = sword_ability.instantiate() as SwordAbility
 	
 	# Add the sword instance to the player's parent (usually the game scene).
 	player.get_parent().add_child(sword_instance)
+	sword_instance.hitbox_component.damage = damage
 	
 	# Set the sword instance's position to the nearest enemy's position.
 	sword_instance.global_position = enemies[0].global_position

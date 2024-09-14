@@ -5,11 +5,6 @@ const MAX_SPEED = 40
 
 @onready var health_component: HealthComponent = $HealthComponent
 
-# Called when the node enters the scene tree for the first time.
-# Can be used for initialization purposes if needed.
-func _ready() -> void:
-	pass # Replace with function body if necessary.
-
 # Called every frame. 'delta' is the time elapsed since the previous frame.
 # Handles the movement of the character towards the player.
 func _process(delta: float) -> void:
@@ -36,7 +31,3 @@ func get_direction_to_player() -> Vector2:
 	
 	# Return a zero vector if no player node is found
 	return Vector2.ZERO
-
-
-func _on_area_2d_area_entered(other_area: Area2D) -> void:
-	health_component.damage(100)
