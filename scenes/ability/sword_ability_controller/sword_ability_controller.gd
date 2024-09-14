@@ -1,28 +1,52 @@
 extends Node
 
-# Exports a variable for a sword ability, which is a PackedScene that can be instantiated later.
+# Exports a variable to store a PackedScene of the sword ability.
+# This scene can be instantiated when the ability is triggered.
 @export var sword_ability : PackedScene
 
+# Exports a variable for the maximum range within which enemies can be targeted.
+# The default value is set to 150.
+@export var max_range : float = 150
+
 # Called when the node enters the scene tree for the first time.
-# Connects the Timer's timeout signal to the custom 'on_timer_timeout' function.
+# Connects the Timer node's timeout signal to the 'on_timer_timeout' function.
 func _ready() -> void:
 	$Timer.timeout.connect(on_timer_timeout)
 
-# This function is called whenever the Timer node times out.
-# It creates an instance of the sword ability and places it at the player's position.
+# This function is called when the Timer times out.
+# It finds the nearest enemy within a specified range and spawns the sword ability at their position.
 func on_timer_timeout() -> void:
-	# Retrieve the first node in the "player" group as a Node2D (the player character).
+	# Get the first node in the "player" group as a Node2D (the player).
 	var player = get_tree().get_first_node_in_group("player") as Node2D
 	
-	# If no player is found, exit the function.
+	# If no player node is found, exit the function.
 	if player == null:
-		return 
+		return
 	
-	# Instantiate a new instance of the sword ability.
+	# Get all nodes in the "enemy" group.
+	var enemies = get_tree().get_nodes_in_group("enemy")
+	
+	# Filter the list of enemies to include only those within 'max_range' from the player.
+	enemies = enemies.filter(func(enemy: Node2D):
+		return enemy.global_position.distance_squared_to(player.global_position) < pow(max_range, 2)
+	)
+	
+	# If no enemies are within range, exit the function.
+	if enemies.size() == 0:
+		return 
+
+	# Sort the enemies by their distance from the player, from nearest to farthest.
+	enemies.sort_custom(func(a: Node2D, b: Node2D):
+		var a_distance = a.global_position.distance_squared_to(player.global_position)
+		var b_distance = b.global_position.distance_squared_to(player.global_position)
+		return a_distance < b_distance
+	)
+	
+	# Instantiate the sword ability and position it at the nearest enemy.
 	var sword_instance = sword_ability.instantiate() as Node2D
 	
-	# Add the sword instance as a child to the player's parent node (usually the game scene).
+	# Add the sword instance to the player's parent (usually the game scene).
 	player.get_parent().add_child(sword_instance)
 	
-	# Set the sword instance's position to the player's current global 
-	sword_instance.global_position = player.global_position
+	# Set the sword instance's position to the nearest enemy's position.
+	sword_instance.global_position = enemies[0].global_position
