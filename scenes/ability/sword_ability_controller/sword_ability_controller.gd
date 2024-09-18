@@ -50,8 +50,10 @@ func on_timer_timeout() -> void:
 	# Instantiate the sword ability and position it at the nearest enemy.
 	var sword_instance = sword_ability.instantiate() as SwordAbility
 	
+	var foreground_layer = get_tree().get_first_node_in_group("foreground_layer")
+	
 	# Add the sword instance to the player's parent (usually the game scene).
-	player.get_parent().add_child(sword_instance)
+	foreground_layer.add_child(sword_instance)
 	sword_instance.hitbox_component.damage = damage
 	
 	# Set the sword instance's position to the nearest enemy's position.
