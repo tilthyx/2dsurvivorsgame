@@ -8,7 +8,7 @@ extends Node
 # The default value is set to 150.
 @export var max_range : float = 150
 
-var damage = 5
+var damage = 10
 
 # Called when the node enters the scene tree for the first time.
 # Connects the Timer node's timeout signal to the 'on_timer_timeout' function.
