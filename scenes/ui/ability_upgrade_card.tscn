@@ -20,3 +20,5 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 text = "Write some description here"
 autowrap_mode = 2
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
