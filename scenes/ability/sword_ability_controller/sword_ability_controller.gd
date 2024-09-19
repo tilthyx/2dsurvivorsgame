@@ -8,7 +8,7 @@ extends Node
 # The default value is set to 150.
 @export var max_range : float = 150
 
-var damage = 10
+var damage = 5
 var base_wait_time
 
 # Called when the node enters the scene tree for the first time.
