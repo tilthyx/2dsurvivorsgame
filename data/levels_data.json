@@ -1,0 +1,35 @@
+{
+  "default": {
+    "target_experience_growth": 1
+  },
+  "level_1": {
+    "target_experience_growth": 1
+  },
+  "level_2": {
+    "target_experience_growth": 2
+  },
+  "level_3": {
+    "target_experience_growth": 3
+  },
+  "level_4": {
+    "target_experience_growth": 5
+  },
+  "level_5": {
+    "target_experience_growth": 7
+  },
+  "level_6": {
+    "target_experience_growth": 9
+  },
+  "level_7": {
+    "target_experience_growth": 12
+  },
+  "level_8": {
+    "target_experience_growth": 17
+  },
+  "level_9": {
+    "target_experience_growth": 22
+  },
+  "level_10": {
+    "target_experience_growth": 31
+  }
+}

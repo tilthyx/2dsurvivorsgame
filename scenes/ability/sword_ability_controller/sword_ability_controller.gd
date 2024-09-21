@@ -1,23 +1,36 @@
 extends Node
+# TODO: Adding the player stats to the database
 
 # Exports a variable to store a PackedScene of the sword ability.
 # This scene can be instantiated when the ability is triggered.
 @export var sword_ability : PackedScene
 
+var ability_id = "sword"
+
 # Exports a variable for the maximum range within which enemies can be targeted.
 # The default value is set to 150.
-@export var max_range : float = 150
-
-var damage = 5
-var base_wait_time
+@export var initial_range : float
+@export var damage: float
+@export var base_wait_time: float
 
 # Called when the node enters the scene tree for the first time.
 # Connects the Timer node's timeout signal to the 'on_timer_timeout' function.
 func _ready() -> void:
-	base_wait_time = $Timer.wait_time
+	init_sword_stats()
+	
+	$Timer.wait_time = base_wait_time
 	$Timer.timeout.connect(on_timer_timeout)
 	GameEvents.ability_upgrade_added.connect(on_ability_upgrade_added)
 
+func init_sword_stats():
+	var sword = Database.get_player_abilities(ability_id)
+	damage = sword["damage"]
+	initial_range = sword["range"]
+	base_wait_time = sword["couldown"]
+	
+	print("Sword Abilities: ", sword)
+	
+	
 # This function is called when the Timer times out.
 # It finds the nearest enemy within a specified range and spawns the sword ability at their position.
 func on_timer_timeout() -> void:
@@ -33,7 +46,7 @@ func on_timer_timeout() -> void:
 	
 	# Filter the list of enemies to include only those within 'max_range' from the player.
 	enemies = enemies.filter(func(enemy: Node2D):
-		return enemy.global_position.distance_squared_to(player.global_position) < pow(max_range, 2)
+		return enemy.global_position.distance_squared_to(player.global_position) < pow(initial_range, 2)
 	)
 	
 	# If no enemies are within range, exit the function.

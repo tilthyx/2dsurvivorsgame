@@ -1,0 +1,13 @@
+{
+    "default": {
+      "speed": 40,
+      "range": 1,
+      "couldown": 2.0
+    },
+    "sword": {
+      "damage": 10,
+      "range": 100,
+      "couldown": 1.5
+    }
+  }
+  

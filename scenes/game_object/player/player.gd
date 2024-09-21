@@ -47,6 +47,7 @@ func check_deal_demage():
 	if number_colliding_bodies == 0 || !damage_interval_timer.is_stopped():
 		return
 	
+#	TODO: Fazer a mudança de quando de dano será aplicado
 	health_component.damage(1)
 	damage_interval_timer.start()
 	print(health_component.current_health)
@@ -56,6 +57,7 @@ func update_health_display():
 
 func _on_colision_area_2d_body_entered(body: Node2D) -> void:
 	number_colliding_bodies += 1
+	print(body)
 	check_deal_demage()
 
 
