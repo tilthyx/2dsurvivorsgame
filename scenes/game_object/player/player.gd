@@ -7,10 +7,14 @@ const ACCELERATION_SMOOTHING = 25
 @onready var damage_interval_timer = $DamageIntervalTimer
 @onready var health_component = $HealthComponent
 @onready var health_bar = $HealthBar
+@onready var abilities = $Abilities
+@onready var animation_player = $AnimationPlayer
+@onready var visuals = $Visuals
 
 var number_colliding_bodies = 0
 
 func _ready() -> void:
+	GameEvents.ability_upgrade_added.connect(on_ability_upgrade_add)
 	update_health_display() 
 
 # Called every frame. 'delta' is the time elapsed since the previous frame.
@@ -30,6 +34,17 @@ func _process(delta: float) -> void:
 	
 	# Move the character using the calculated velocity, sliding along surfaces when necessary
 	move_and_slide()
+	
+	if movement_vector.x != 0 || movement_vector.y != 0:
+		animation_player.play("walk")
+	else:
+		animation_player.play("RESET")
+		
+	var move_sign = sign(movement_vector.x)
+	if move_sign == 0:
+		visuals.scale = Vector2.ONE
+	else:
+		visuals.scale = Vector2(move_sign, 1)
 
 # Gets the movement vector based on player input.
 # Uses action strength for right/left and up/down movement.
@@ -71,3 +86,11 @@ func _on_damage_interval_timer_timeout() -> void:
 
 func _on_health_component_health_changed() -> void:
 	update_health_display()
+	
+func on_ability_upgrade_add(ability_upgrade: AbilityUpgrade, current_upgrades: Dictionary) -> void:
+	if not ability_upgrade is Ability:
+		return
+	
+	var ability = ability_upgrade as Ability
+	abilities.add_child(ability.ability_controller_scene.instantiate())
+	
