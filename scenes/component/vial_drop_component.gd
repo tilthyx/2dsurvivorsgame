@@ -19,5 +19,6 @@ func on_died():
 		
 	var spawn_position = (owner as Node2D).global_position
 	var vial_instance = vial_scene.instantiate() as Node2D
-	owner.get_parent().add_child(vial_instance)
+	var entities = get_tree().get_first_node_in_group("entities_layer")
+	entities.add_child(vial_instance)
 	vial_instance.global_position = spawn_position

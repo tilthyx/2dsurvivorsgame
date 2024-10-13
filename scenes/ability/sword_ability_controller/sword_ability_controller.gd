@@ -1,20 +1,36 @@
 extends Node
+# TODO: Adding the player stats to the database
 
 # Exports a variable to store a PackedScene of the sword ability.
 # This scene can be instantiated when the ability is triggered.
 @export var sword_ability : PackedScene
 
+var ability_id = "sword"
+
 # Exports a variable for the maximum range within which enemies can be targeted.
 # The default value is set to 150.
-@export var max_range : float = 150
-
-var damage = 10
+@export var initial_range : float
+@export var damage: float
+@export var base_wait_time: float
 
 # Called when the node enters the scene tree for the first time.
 # Connects the Timer node's timeout signal to the 'on_timer_timeout' function.
 func _ready() -> void:
+	init_sword_stats()
+	
+	$Timer.wait_time = base_wait_time
 	$Timer.timeout.connect(on_timer_timeout)
+	GameEvents.ability_upgrade_added.connect(on_ability_upgrade_added)
 
+func init_sword_stats():
+	var sword = Database.get_player_abilities(ability_id)
+	damage = sword["damage"]
+	initial_range = sword["range"]
+	base_wait_time = sword["couldown"]
+	
+	print("Sword Abilities: ", sword)
+	
+	
 # This function is called when the Timer times out.
 # It finds the nearest enemy within a specified range and spawns the sword ability at their position.
 func on_timer_timeout() -> void:
@@ -30,7 +46,7 @@ func on_timer_timeout() -> void:
 	
 	# Filter the list of enemies to include only those within 'max_range' from the player.
 	enemies = enemies.filter(func(enemy: Node2D):
-		return enemy.global_position.distance_squared_to(player.global_position) < pow(max_range, 2)
+		return enemy.global_position.distance_squared_to(player.global_position) < pow(initial_range, 2)
 	)
 	
 	# If no enemies are within range, exit the function.
@@ -47,8 +63,10 @@ func on_timer_timeout() -> void:
 	# Instantiate the sword ability and position it at the nearest enemy.
 	var sword_instance = sword_ability.instantiate() as SwordAbility
 	
+	var foreground_layer = get_tree().get_first_node_in_group("foreground_layer")
+	
 	# Add the sword instance to the player's parent (usually the game scene).
-	player.get_parent().add_child(sword_instance)
+	foreground_layer.add_child(sword_instance)
 	sword_instance.hitbox_component.damage = damage
 	
 	# Set the sword instance's position to the nearest enemy's position.
@@ -57,3 +75,14 @@ func on_timer_timeout() -> void:
 	
 	var enemy_direction = enemies[0].global_position - sword_instance.global_position
 	sword_instance.rotation = enemy_direction.angle()
+
+
+func on_ability_upgrade_added(upgrade: AbilityUpgrade, current_upgrades: Dictionary):
+	if upgrade.id != "sword_rate":
+		return
+		
+	var percent_reduction = current_upgrades["sword_rate"]["quantity"] * .1
+	$Timer.wait_time = base_wait_time * (1 - percent_reduction)
+	$Timer.start()
+	
+	print($Timer.wait_time)

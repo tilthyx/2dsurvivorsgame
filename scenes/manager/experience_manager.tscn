@@ -4,3 +4,4 @@
 
 [node name="ExperienceManager" type="Node"]
 script = ExtResource("1_gfevj")
+level = "level_100"
