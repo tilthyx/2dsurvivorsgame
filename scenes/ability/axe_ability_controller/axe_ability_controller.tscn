@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3t48xt5i3s4g"]
+
+[ext_resource type="Script" path="res://scenes/ability/axe_ability_controller/axe_ability_controller.gd" id="1_cg1le"]
+[ext_resource type="PackedScene" uid="uid://psktwdcdsv0d" path="res://scenes/ability/axe_ability/axe_ability.tscn" id="2_prt1p"]
+
+[node name="AxeAbilityController" type="Node"]
+script = ExtResource("1_cg1le")
+axe_ability_scene = ExtResource("2_prt1p")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
